@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="header">
-      <h2>Manage Products project demo for CI/CD on store admin of bestbuy store</h2>
+      <h2>Manage Products</h2>
       <router-link to="/product/add">
         <button class="add-btn">+ Add Product</button>
       </router-link>
