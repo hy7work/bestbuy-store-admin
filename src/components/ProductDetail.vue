@@ -1,69 +1,122 @@
 <template>
-  <div class="action-button">
-    <router-link :to="`/product/${this.$route.params.id}/edit`">
-      <button class="button">Edit Product</button>
-    </router-link>
-  </div>
-  <br/>
-  <div class="product-detail" v-if="productExists">
-    <div class="product-image">
-      <img :src="product.image" alt="Product Image">
+  <div>
+    <div class="action-bar">
+      <router-link :to="`/product/${$route.params.id}/edit`">
+        <button class="edit-btn">Edit Product</button>
+      </router-link>
     </div>
-    <div class="product-info">
-      <h2>{{ product.name }} - {{ product.price }}</h2>
-      <small>Product ID: {{ product.id }}</small>
-      <p>{{ product.description }}</p>
+
+    <div class="product-detail" v-if="productExists">
+      <div class="product-image">
+        <img :src="product.image" alt="Product Image">
+      </div>
+
+      <div class="product-info">
+        <h2>{{ product.name }}</h2>
+        <p class="price">${{ formatPrice(product.price) }}</p>
+        <small class="product-id">Product ID: {{ product.id }}</small>
+        <p class="description">{{ product.description }}</p>
+      </div>
     </div>
-  </div>
-  <div class="product-detail" v-else>
-    <h3>Product not found</h3>
+
+    <div class="product-detail" v-else>
+      <h3>Product not found</h3>
+    </div>
   </div>
 </template>
 
 <script>
-  export default {
-    name: 'ProductDetail',
-    props: ['products'],
-    computed: {
-      product() {
-        return this.products.find(product => product.id == this.$route.params.id)
-      },
-      productExists() {
-        return !!this.product
-      }
+export default {
+  name: 'ProductDetail',
+  props: ['products'],
+  computed: {
+    product() {
+      return this.products.find(product => product.id == this.$route.params.id)
     },
+    productExists() {
+      return !!this.product
+    }
+  },
+  methods: {
+    formatPrice(price) {
+      return Number(price).toFixed(2)
+    }
   }
+}
 </script>
 
 <style scoped>
-a {
-  color: #0000FF;
-  text-decoration: underline;
+.action-bar {
+  margin-bottom: 20px;
+}
+
+.edit-btn {
+  background-color: #0046be;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.edit-btn:hover {
+  background-color: #003399;
+}
+
+.product-detail {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
 }
 
 .product-image {
   flex: 1;
-  margin-right: 20px;
+  max-width: 320px;
 }
 
 .product-image img {
   width: 100%;
   height: auto;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background: #fff;
 }
 
 .product-info {
-  flex: 1;
+  flex: 2;
   text-align: left;
 }
 
 .product-info h2 {
-  font-size: 24px;
+  font-size: 28px;
   margin-bottom: 10px;
 }
 
-.product-info p {
+.price {
+  font-size: 22px;
+  font-weight: bold;
+  color: #0046be;
+  margin-bottom: 10px;
+}
+
+.product-id {
+  display: block;
+  margin-bottom: 16px;
+  color: #666;
+}
+
+.description {
   font-size: 16px;
-  margin-bottom: 20px;
+  line-height: 1.5;
+}
+
+a {
+  color: #0046be;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
 }
 
 @media (max-width: 768px) {

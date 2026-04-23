@@ -2,8 +2,8 @@ const { defineConfig } = require('@vue/cli-service')
 const fetch = require("node-fetch")
 const bodyParser = require('body-parser')
 
-const PRODUCT_SERVICE_URL = (process.env.VUE_APP_PRODUCT_SERVICE_URL || "http://172.19.0.2:3002/")
-const MAKELINE_SERVICE_URL = (process.env.VUE_APP_MAKELINE_SERVICE_URL || "http://172.19.0.6:3001/")
+const PRODUCT_SERVICE_URL = (process.env.VUE_APP_PRODUCT_SERVICE_URL || "http://localhost:3002/")
+const MAKELINE_SERVICE_URL = (process.env.VUE_APP_MAKELINE_SERVICE_URL || "http://localhost:3001/")
 
 module.exports = defineConfig({
   transpileDependencies: true,

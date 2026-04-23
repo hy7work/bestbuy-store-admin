@@ -13,11 +13,11 @@
 </template>
 
 <script>
-import TopNav from './components/TopNav.vue';
+import TopNav from './components/TopNav.vue'
 
-const productServiceUrl = "/products/";
-const singleProductServiceUrl = "/product/";
-const makelineServiceUrl = "/makeline/";
+const productServiceUrl = '/products/'
+const singleProductServiceUrl = '/product/'
+const makelineServiceUrl = '/makeline/'
 
 export default {
   name: 'App',
@@ -32,86 +32,89 @@ export default {
     }
   },
   mounted() {
-    this.getProducts();
+    this.getProducts()
   },
   methods: {
-    async addProductsToList(newProduct) {
-      this.products.push(newProduct);
+    addProductsToList(newProduct) {
+      this.products.push(newProduct)
     },
-    async updateProductInList(updatedProduct) {
-      const index = this.products.findIndex(product => product.id === updatedProduct.id);
-      this.products[index] = updatedProduct;
+
+    updateProductInList(updatedProduct) {
+      const index = this.products.findIndex(product => product.id === updatedProduct.id)
+      if (index !== -1) {
+        this.products[index] = updatedProduct
+      }
     },
+
     async getProduct(id) {
-      fetch(`${singleProductServiceUrl}${id}`)
-        .then(response => response.json())
-        .then(product => {
-          this.product.id = product.id
-          this.product.name = product.name
-          this.product.image = product.image
-          this.product.description = product.description
-          this.product.price = product.price
-        })
-        .catch(error => {
-          console.log(error)
-          alert('Error occurred while fetching product')
-        })
+      try {
+        const response = await fetch(`${singleProductServiceUrl}${id}`)
+        const product = await response.json()
+
+        this.product.id = product.id
+        this.product.name = product.name
+        this.product.image = product.image
+        this.product.description = product.description
+        this.product.price = product.price
+      } catch (error) {
+        console.log(error)
+        alert('Error occurred while fetching product')
+      }
     },
+
     async getProducts() {
-      fetch(`${productServiceUrl}`)
-        .then(response => response.json())
-        .then(products => {
-          this.products = products
-        })
-        .catch(error => {
-          console.log(error)
-          alert('Error occurred while fetching products')
-        })
+      try {
+        const response = await fetch(productServiceUrl)
+        const products = await response.json()
+        this.products = products || []
+      } catch (error) {
+        console.log(error)
+        alert('Error occurred while fetching products')
+      }
     },
+
     async fetchOrders() {
-      await fetch(`${makelineServiceUrl}order/fetch`)
-        .then(response => response.json())
-        .then(data => {
-          console.log(data)
-          if (data) {
-            this.orders = data;
-          } else {
-            console.log('No orders from server');
-          }
-        })
-        .catch(error => console.error(error));
+      try {
+        const response = await fetch('/makeline/order/fetch')
+        const data = await response.json()
+
+        console.log('Orders from API:', data)
+        this.orders = data || []
+      } catch (error) {
+        console.error('Failed to fetch orders:', error)
+        this.orders = []
+      }
     },
-    async completeOrder(orderId) {      
-      // get the order and update the status
-      let order = this.orders.find(order => order.orderId === orderId);
-      order.status = 1;
 
-      let orderObject = JSON.stringify(order)
-      console.log(orderObject);
+    async completeOrder(orderId) {
+      const order = this.orders.find(order => order.orderId === orderId)
+      if (!order) return
 
-      await fetch(`${makelineServiceUrl}order`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: orderObject
-      })
-        .then(response => {
-          if (!response.ok) {
-            alert('Error occurred while processing order')
-          } else {
-            alert('Order successfully processed')
-            // remove the order from the list
-            this.orders = this.orders.filter(order => order.orderId !== orderId);
-            this.$router.go(-1);
-          }
+      order.status = 1
+
+      try {
+        const response = await fetch(`${makelineServiceUrl}order`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(order)
         })
-        .catch(error => {
-          console.log(error)
+
+        if (!response.ok) {
           alert('Error occurred while processing order')
-        })
+          return
+        }
+
+        alert('Order successfully processed')
+        this.orders = this.orders.filter(order => order.orderId !== orderId)
+        this.$router.go(-1)
+      } catch (error) {
+        console.log(error)
+        alert('Error occurred while processing order')
+      }
     }
-  },
+  }
 }
 </script>
 
@@ -121,77 +124,56 @@ export default {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #2c3e50;
-  margin-top: 120px;
-  padding: 1rem;
-}
-
-footer {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background-color: #333;
-  color: #fff;
-  padding: 1rem;
-  margin: 0;
-}
-
-nav {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-ul {
-  display: flex;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-li {
-  margin: 0 1rem;
-}
-
-a {
-  color: #fff;
-  text-decoration: none;
+  color: #1f1f1f;
+  margin-top: 110px;
+  padding: 1rem 1.5rem 2rem;
+  background-color: #f5f6f8;
+  min-height: 100vh;
+  box-sizing: border-box;
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
   border-spacing: 0;
+  background: #fff;
+  border-radius: 8px;
+  overflow: hidden;
 }
 
 th,
 td {
-  padding: 8px;
+  padding: 10px;
   text-align: left;
   border-bottom: 1px solid #ddd;
 }
 
-.order-detail {
-  text-align: left;
+th {
+  background-color: #0046be;
+  color: white;
 }
 
 button {
-  padding: 10px;
-  background-color: #005f8b;
+  padding: 10px 14px;
+  background-color: #0046be;
   color: #fff;
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  height: 42px;
+  min-height: 42px;
+  font-weight: bold;
 }
 
 button:hover {
-  background-color: #005f8b;
+  background-color: #003399;
 }
 
 .action-button {
   float: right;
+}
+
+.order-detail {
+  text-align: left;
 }
 
 .product-detail {
@@ -222,23 +204,26 @@ button:hover {
 
 .ai-button {
   margin-left: 10px;
-  padding: 10px 10px;
+  padding: 10px;
   border-radius: 5px;
   border: none;
-  background-color: #007acc;
-  color: #fff;
+  background-color: #ffde00;
+  color: #111;
   cursor: pointer;
+  font-weight: bold;
 }
 
 .ai-button:hover {
-  background-color: #005f8b;
+  background-color: #f5d300;
 }
 
-textarea {
+textarea,
+input {
   width: 100%;
-  padding: 5px;
+  padding: 8px;
   border-radius: 5px;
   border: 1px solid #ccc;
+  box-sizing: border-box;
 }
 
 label {
@@ -246,12 +231,5 @@ label {
   margin-right: 10px;
   width: 100px;
   font-weight: bold;
-}
-
-input {
-  width: 100%;
-  padding: 5px;
-  border-radius: 5px;
-  border: 1px solid #ccc;
 }
 </style>
