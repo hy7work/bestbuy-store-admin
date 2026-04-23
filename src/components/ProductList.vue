@@ -12,7 +12,7 @@
         <thead>
           <tr>
             <th>ID</th>
-            <th>Product</th>
+            <th>Product_Demo</th>
             <th>Description</th>
             <th>Price ($)</th>
           </tr>
