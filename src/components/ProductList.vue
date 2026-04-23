@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="header">
-      <h2>Manage Products</h2>
+      <h2>Manage Products Demo for CI/CD</h2>
       <router-link to="/product/add">
         <button class="add-btn">+ Add Product</button>
       </router-link>
@@ -12,7 +12,7 @@
         <thead>
           <tr>
             <th>ID</th>
-            <th>Product_Demo</th>
+            <th>Product</th>
             <th>Description</th>
             <th>Price ($)</th>
           </tr>
